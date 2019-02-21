@@ -27,6 +27,8 @@ namespace Ruka_Market.Models
         public decimal Salary { get; set; }
 
         [Display(Name = "Percentagem Bónus")]
+        [Range(0, 20, ErrorMessage ="O valor de {0} deverá ser entre {1} e {2}")]
+
         public float BonusPercent { get; set; }
 
         [DataType(DataType.Date)]
