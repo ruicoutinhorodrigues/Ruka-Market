@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -21,6 +22,10 @@ namespace Ruka_Market.Models
         [Display(Name = "Apelido")]
         public string LastName { get; set; }
 
+        [Display(Name = "Nome")]
+        [NotMapped]
+        public string Name { get { return $"{FirstName} {LastName}"; } }
+
         [DataType(DataType.PhoneNumber)]
         [Required(ErrorMessage = "Tem de inserir um {0}")]
         [StringLength(30, ErrorMessage = "O campo {0} deverá conter entre {2} e {1} digitos", MinimumLength = 9)]
@@ -40,8 +45,13 @@ namespace Ruka_Market.Models
         [Display(Name = "Nº Documento")]
         public string Document { get; set; }
 
+        [Required(ErrorMessage = "O {0} é obrigatório")]
+        [Range(1, double.MaxValue, ErrorMessage ="Tem de selecionar um {0}")]
+        [Display(Name = "Tipo de documento")]
         public int DocumentTypeID { get; set; }
 
         public virtual DocumentType DocumentType { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

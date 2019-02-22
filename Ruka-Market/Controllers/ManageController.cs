@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ruka_Market.Models;
+using Ruka_Market.ViewModels;
 
 namespace Ruka_Market.Controllers
 {

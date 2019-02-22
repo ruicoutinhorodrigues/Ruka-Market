@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ruka_Market.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -38,7 +39,8 @@ namespace Ruka_Market.Models
         // GET: Employees/Create
         public ActionResult Create()
         {
-            ViewBag.DocumentTypeID = new SelectList(db.DocumentTypes, "DocumentTypeID", "Description");
+            ViewBag.DocumentTypeID = new SelectList(CombosHelper.GetDocumentTypes(), "DocumentTypeID", "Description");
+
             return View();
         }
 
@@ -56,7 +58,8 @@ namespace Ruka_Market.Models
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DocumentTypeID = new SelectList(db.DocumentTypes, "DocumentTypeID", "Description", employee.DocumentTypeID);
+            ViewBag.DocumentTypeID = new SelectList(CombosHelper.GetDocumentTypes(), "DocumentTypeID", "Description", employee.DocumentTypeID);
+
             return View(employee);
         }
 

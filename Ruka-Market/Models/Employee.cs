@@ -46,6 +46,9 @@ namespace Ruka_Market.Models
 
         public string URL { get; set; }
 
+        [Required(ErrorMessage = "O {0} é obrigatório")]
+        [Range(1, double.MaxValue, ErrorMessage = "Tem de selecionar um {0}")]
+        [Display(Name = "Tipo de documento")]
         public int DocumentTypeID { get; set; }
 
         [NotMapped]

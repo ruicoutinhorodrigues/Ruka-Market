@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ruka_Market.Models
+namespace Ruka_Market.ViewModels
 {
     public class ExternalLoginConfirmationViewModel
     {

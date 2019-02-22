@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Ruka_Market.Helpers;
 using Ruka_Market.Models;
 
 namespace Ruka_Market.Controllers
@@ -39,13 +40,8 @@ namespace Ruka_Market.Controllers
         // GET: Customers/Create
         public ActionResult Create()
         {
-            var list = db.DocumentTypes.ToList();
-            list.Add(new DocumentType { DocumentTypeID = 0, Description = "[Selecione um tipo de documento]" });
-            list = list.OrderBy(c => c.Description).ToList();
-
-            ViewBag.DocumentTypeID = new SelectList(list, "DocumentTypeID", "Description");
-
-            
+            ViewBag.DocumentTypeID = new SelectList(CombosHelper.GetDocumentTypes(), "DocumentTypeID", "Description");
+        
             return View();
         }
 
@@ -63,7 +59,7 @@ namespace Ruka_Market.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DocumentTypeID = new SelectList(db.DocumentTypes, "DocumentTypeID", "Description", customer.DocumentTypeID);
+            ViewBag.DocumentTypeID = new SelectList(CombosHelper.GetDocumentTypes(), "DocumentTypeID", "Description", customer.DocumentTypeID);
 
             return View(customer);
         }
