@@ -11,7 +11,7 @@ namespace Ruka_Market.Models
         [Key]
         public int OrderDetailID { get; set; }
 
-        public int OrderiD { get; set; }
+        public int OrderID { get; set; }
 
         public int ProductID { get; set; }
 
@@ -29,7 +29,7 @@ namespace Ruka_Market.Models
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
         [Required(ErrorMessage = "Tem de inserir uma {0}")]
         [Display(Name = "Quantidade")]
-        public float Quantidade { get; set; }
+        public float Quantity { get; set; }
 
         public virtual Order Order { get; set; }
 
