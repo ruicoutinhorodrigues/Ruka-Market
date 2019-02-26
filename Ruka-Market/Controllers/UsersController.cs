@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Ruka_Market.Helpers;
 using Ruka_Market.Models;
 using Ruka_Market.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -39,6 +41,11 @@ namespace Ruka_Market.Controllers
         //Get: Roles
         public ActionResult Roles(string userID)
         {
+            if (string.IsNullOrEmpty(userID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
 
@@ -46,6 +53,11 @@ namespace Ruka_Market.Controllers
             var users = userManager.Users.ToList();
 
             var user = users.Find(u => u.Id == userID);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
 
             var rolesView = new List<RoleView>();
 
@@ -66,11 +78,84 @@ namespace Ruka_Market.Controllers
                 Email = user.Email,
                 Name = user.UserName,
                 UserID = user.Id,
-                Role = rolesView
+                Roles = rolesView
             };
 
             return View(userView);
         }
+
+        public ActionResult AddRole(string userID)
+        {
+            if (string.IsNullOrEmpty(userID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+            var users = userManager.Users.ToList();
+
+            var user = users.Find(u => u.Id == userID);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Name = user.UserName,
+                UserID = user.Id
+            };
+
+            ViewBag.RoleID = new SelectList(CombosHelper.GetRoles(), "Id", "Name");
+
+            return View(userView);
+
+        }
+
+        [HttpPost]
+        public ActionResult AddRole(string userID, FormCollection form)
+        {
+            var roleID = Request["RoleID"];
+
+            if (string.IsNullOrEmpty(roleID))
+            {
+                ViewBag.Error = "Tem de selecionar uma permissão";
+
+                ViewBag.RoleID = new SelectList(CombosHelper.GetRoles(), "Id", "Name");
+
+                return View();
+            }
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+            var users = userManager.Users.ToList();
+
+            var user = users.Find(u => u.Id == userID);
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Name = user.UserName,
+                UserID = user.Id
+            };
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+
+            var roles = roleManager.Roles.ToList();
+
+            var role = roles.Find(r => r.Id == roleID);
+
+            if (!userManager.IsInRole(userID, role.Name))
+            {
+                userManager.AddToRole(userID, role.Name);
+            }
+
+            return View(userView);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

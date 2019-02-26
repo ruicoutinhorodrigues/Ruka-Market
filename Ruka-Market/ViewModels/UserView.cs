@@ -15,6 +15,6 @@ namespace Ruka_Market.ViewModels
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public List<RoleView> Role { get; set; }
+        public List<RoleView> Roles { get; set; }
     }
 }

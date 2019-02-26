@@ -1,4 +1,6 @@
-﻿using Ruka_Market.Models;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Ruka_Market.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,8 @@ namespace Ruka_Market.Helpers
     public class CombosHelper : IDisposable
     {
         private static Ruka_MarketContext db = new Ruka_MarketContext();
+
+        private static ApplicationDbContext da = new ApplicationDbContext();
 
         public static List<DocumentType> GetDocumentTypes()
         {
@@ -50,6 +54,16 @@ namespace Ruka_Market.Helpers
             return Products.OrderBy(p => p.Description).ToList();
         }
 
+        public static List<IdentityRole> GetRoles()
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(da));
+
+            var list = roleManager.Roles.ToList();
+
+            list.Add(new IdentityRole { Id = "", Name = "[Selecione uma permissão...]" });
+
+            return list.OrderBy(r => r.Name).ToList();         
+        }
 
         public void Dispose()
         {

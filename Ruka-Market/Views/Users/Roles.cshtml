@@ -5,3 +5,22 @@
 
 <h2>Permissões para o utilizador: @Model.Name</h2>
 
+<p>
+    @Html.ActionLink("Adicionar permissão", "AddRole", new { userID = Model.UserID }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-info" })
+</p>
+
+<table class="table">
+
+    @foreach (var item in Model.Roles)
+    {
+        <tr> 
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Apagar", "Delete", new { user = Model, item.RoleID })
+            </td>
+        </tr>
+    }
+</table>
