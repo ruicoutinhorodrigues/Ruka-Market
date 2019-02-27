@@ -118,16 +118,7 @@ namespace Ruka_Market.Controllers
         [HttpPost]
         public ActionResult AddRole(string userID, FormCollection form)
         {
-            var roleID = Request["RoleID"];
-
-            if (string.IsNullOrEmpty(roleID))
-            {
-                ViewBag.Error = "Tem de selecionar uma permissão";
-
-                ViewBag.RoleID = new SelectList(CombosHelper.GetRoles(), "Id", "Name");
-
-                return View();
-            }
+            var roleID = Request["RoleID"];    
 
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
 
@@ -139,8 +130,18 @@ namespace Ruka_Market.Controllers
             {
                 Email = user.Email,
                 Name = user.UserName,
-                UserID = user.Id
+                UserID = user.Id,
+                Roles = new List<RoleView>()  //+Diff
             };
+
+            if (string.IsNullOrEmpty(roleID))
+            {
+                ViewBag.Error = "Tem de selecionar uma permissão";
+
+                ViewBag.RoleID = new SelectList(CombosHelper.GetRoles(), "Id", "Name");
+
+                return View(userView);
+            }
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
 
@@ -153,7 +154,81 @@ namespace Ruka_Market.Controllers
                 userManager.AddToRole(userID, role.Name);
             }
 
-            return View(userView);
+            //var rolesView = new List<RoleView>();
+
+            foreach (var item in user.Roles)
+            {
+                role = roles.Find(r => r.Id == item.RoleId);
+                var roleView = new RoleView
+                {
+                    Name = role.Name,
+                    RoleID = role.Id
+                };
+
+                //rolesView.Add(roleView);
+                userView.Roles.Add(roleView); //Diff
+            }
+
+            //userView = new UserView
+            //{
+            //    Email = user.Email,
+            //    Name = user.UserName,
+            //    Roles = rolesView,
+            //    UserID = user.Id
+            //};
+
+            return View("Roles", userView);
+        }
+
+        public ActionResult Delete(string userID, string roleID)
+        {
+            if (string.IsNullOrEmpty(userID) || string.IsNullOrEmpty(roleID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+            var user = userManager.Users.ToList().Find(u => u.Id == userID);
+
+            var role = roleManager.Roles.ToList().Find(r => r.Id == roleID);
+
+            //Apagar o user deste role
+            if (userManager.IsInRole(user.Id, role.Name))
+            {
+                userManager.RemoveFromRole(user.Id, role.Name);
+            }
+
+            //Preparar a view
+            var users = userManager.Users.ToList();
+
+            var roles = roleManager.Roles.ToList();
+
+            var rolesView = new List<RoleView>();
+
+            foreach (var item in user.Roles)
+            {
+                role = roles.Find(r => r.Id == item.RoleId);
+                var roleView = new RoleView
+                {
+                    Name = role.Name,
+                    RoleID = role.Id
+                };
+
+                rolesView.Add(roleView);
+            }
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Name = user.UserName,
+                Roles = rolesView,
+                UserID = user.Id
+            };
+
+            return View("Roles", userView);
         }
 
 

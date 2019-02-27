@@ -19,7 +19,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Apagar", "Delete", new { user = Model, item.RoleID })
+                @Html.ActionLink("Apagar", "Delete", new { userId = Model.UserID, roleId = item.RoleID })
             </td>
         </tr>
     }
