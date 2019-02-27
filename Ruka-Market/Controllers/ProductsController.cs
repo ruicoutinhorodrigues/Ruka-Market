@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Ruka_Market.Helpers;
 using Ruka_Market.Models;
 
 namespace Ruka_Market.Controllers
@@ -49,12 +50,31 @@ namespace Ruka_Market.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProductID,Description,Price,LastBuy,Stock,Remarks")] Product product)
+        public ActionResult Create([Bind(Include = "ProductID,Description,Price,LastBuy,Stock,Image,ProductImageURL,Remarks")] Product product)
         {
             if (ModelState.IsValid)
             {
                 db.Products.Add(product);
                 db.SaveChanges();
+
+                if (product.ProductImageURL != null)
+                {
+                    var folder = "~/Content/Images";
+                    var file = $"{product.ProductID}.png";
+
+                    var response = FilesHelper.UploadImage(product.ProductImageURL, folder, file);
+
+                    if (response)
+                    {
+                        var pic = $"{folder}/{file}";
+                        product.Image = pic;
+                        db.Entry(product).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+
+
+
                 return RedirectToAction("Index");
             }
 
@@ -85,10 +105,26 @@ namespace Ruka_Market.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,Description,Price,LastBuy,Stock,Remarks")] Product product)
+        public ActionResult Edit([Bind(Include = "ProductID,Description,Price,LastBuy,Stock,Image,ProductImageURL,Remarks")] Product product)
         {
             if (ModelState.IsValid)
             {
+                if (product.ProductImageURL != null)
+                {
+                    var folder = "~/Content/Images";
+                    var file = $"{product.ProductID}.png";
+
+                    var response = FilesHelper.UploadImage(product.ProductImageURL, folder, file);
+
+                    if (response)
+                    {
+                        var pic = $"{folder}/{file}";
+                        product.Image = pic;
+                    }
+
+                }
+
+
                 db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

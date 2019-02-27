@@ -198,6 +198,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CombosHelper.cs" />
+    <Compile Include="Helpers\FilesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductOrder.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
@@ -320,6 +321,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Images\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

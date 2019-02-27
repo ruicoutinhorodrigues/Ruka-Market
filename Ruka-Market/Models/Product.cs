@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -30,6 +31,11 @@ namespace Ruka_Market.Models
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
         public float Stock { get; set; }
+
+        public string Image { get; set; }
+
+        [NotMapped]
+        public HttpPostedFileBase ProductImageURL { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
